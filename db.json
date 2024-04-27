@@ -1,0 +1,138 @@
+{
+  "dialogs": [
+    {
+      "user": {
+        "_id": "6f1ddae537bb5031131fb21ef9344111",
+        "fullname": "Цыгвенцев Олег",
+        "login": "cegun",
+        "avatar": null
+      },
+      "created_at": "Wed Apr 24 2024 00:03:24 GMT+0500 (Екатеринбург, стандартное время)",
+      "text": "Привет, как дела? \n Привет, как дела? Привет, как дела?",
+      "_id": "7e93436cf74384996d95a8bcdfafeb13"
+    },
+    {
+      "_id": "be17d44835a99de59e8f54e2ae7d1202",
+      "user": {
+        "_id": "6f1ddae537bb5031131fb21ef9344112",
+        "fullname": "Красильников Вадим",
+        "login": "v_krasiv",
+        "avatar": "https://images.ast.ru/upload/iblock/ba8/Gosling_752.jpg"
+      },
+      "created_at": "Wed Apr 24 2024 00:03:24 GMT+0500 (Екатеринбург, стандартное время)",
+      "text": "Привет, как дела? \n Привет, как дела? Привет, как дела?"
+    },
+    {
+      "_id": "6f1ddae537bb5031131fb21ef9344112",
+      "user": {
+        "_id": "1312ab123d1232123ab12bb1",
+        "fullname": "Красильникова Алина",
+        "login": "krasava",
+        "online": true,
+        "avatar": "https://images.ast.ru/upload/iblock/ba8/Gosling_752.jpg"
+      },
+      "created_at": "Wed Apr 24 2024 00:03:24 GMT+0500 (Екатеринбург, стандартное время)",
+      "text": "Привет, как дела? \n Привет, как дела? Привет, как дела?"
+    },
+    {
+      "_id": "6364d3f0f495b6ab9dcf8d3b5c6e0b01",
+      "user": {
+        "_id": "1312ab123d1232123ab12bb1",
+        "fullname": "Красильникова Людмила",
+        "login": "krasiva_luda",
+        "avatar": null
+      },
+      "created_at": "Wed Apr 24 2024 00:03:24 GMT+0500 (Екатеринбург, стандартное время)",
+      "text": "Привет, как дела? \n Привет, как дела? Привет, как дела?"
+    }
+  ],
+  "messages": [
+    {
+      "_id": "7e93436cf74384996d95a8bcdfafeb13",
+      "text": "Привет, как дела? \n Привет, как дела? Привет, как дела?",
+      "dialog": "1312ab123d1232123ab12bb1",
+      "created_at": "Wed Apr 24 2024 00:03:24 GMT+0500 (Екатеринбург, стандартное время)",
+      "user": {
+        "_id": "6f1ddae537bb5031131fb21ef9344112",
+        "fullname": "Красильников Вадим",
+        "login": "v_krasiv",
+        "avatar": "https://images.ast.ru/upload/iblock/ba8/Gosling_752.jpg"
+      }
+    },
+    {
+      "_id": "7e93436cf74384996d95a8bcdfafeb13",
+      "text": "Привет, как дела? \n Привет, как дела? Привет, как дела?",
+      "dialog": "1312ab123d1232123ab12bb1",
+      "created_at": "Wed Apr 24 2024 00:03:24 GMT+0500 (Екатеринбург, стандартное время)",
+      "user": {
+        "_id": "6f1ddae537bb5031131fb21ef9344112",
+        "fullname": "Красильников Вадим",
+        "login": "v_krasiv",
+        "avatar": " ://images.ast.ru/upload/iblock/ba8/Gosling_752.jpg"
+      }
+    },
+    {
+      "_id": "7e93436cf74384996d95a8bcdfafeb13",
+      "text": "Привет, как дела? \n Привет, как дела? Привет, как дела?",
+      "dialog": "1312ab123d1232123ab12bb1",
+      "created_at": "Wed Apr 24 2024 00:03:24 GMT+0500 (Екатеринбург, стандартное время)",
+      "user": {
+        "_id": "6f1ddae537bb5031131fb21ef9344112",
+        "fullname": "Красильников Вадим",
+        "login": "v_krasiv",
+        "avatar": "https://images.ast.ru/upload/iblock/ba8/Gosling_752.jpg"
+      }
+    },
+    {
+      "_id": "7e93436cf74384996d95a8bcdfafeb13",
+      "text": "Привет, как дела? \n Привет, как дела? Привет, как дела?",
+      "attachments": [
+        {
+          "filename": "file.jpg",
+          "url": "https://trikky.ru/wp-content/blogs.dir/1/files/2023/03/23/zyro-image-11.jpg"
+        },
+        {
+          "filename": "file.jpg",
+          "url": "https://s0.rbk.ru/v6_top_pics/media/img/4/04/346843326750044.jpg"
+        },
+        {
+          "filename": "file.jpg",
+          "url": "https://trikky.ru/wp-content/blogs.dir/1/files/2023/03/23/zyro-image-11.jpg"
+        },
+        {
+          "filename": "file.jpg",
+          "url": "https://trikky.ru/wp-content/blogs.dir/1/files/2023/03/23/zyro-image-11.jpg"
+        },
+        {
+          "filename": "file.jpg",
+          "url": "https://i.pinimg.com/236x/bb/58/bd/bb58bdbfd72620db733518937bb58fb7.jpg"
+        },
+        {
+          "filename": "file.jpg",
+          "url": "https://img.freepik.com/free-photo/forest-landscape_71767-127.jpg?size=626&ext=jpg&ga=GA1.1.632798143.1708516800&semt=ais"
+        }
+      ],
+      "dialog": "1312ab123d1232123ab12bb1",
+      "created_at": "Wed Apr 24 2024 00:03:24 GMT+0500 (Екатеринбург, стандартное время)",
+      "user": {
+        "_id": "6f1ddae537bb5031131fb21ef9344112",
+        "fullname": "Красильников Вадим",
+        "login": "v_krasiv",
+        "avatar": " ://images.ast.ru/upload/iblock/ba8/Gosling_752.jpg"
+      }
+    },
+    {
+      "_id": "7e93436cf74384996d95a8bcdfafeb13",
+      "text": "Привет, как дела? \n Привет, как дела? Привет, как дела? 😊",
+      "dialog": "1312ab123d1232123ab12bb1",
+      "created_at": "Wed Apr 24 2024 00:03:24 GMT+0500 (Екатеринбург, стандартное время)",
+      "user": {
+        "_id": "1312ab123d1232123ab12bb1",
+        "fullname": "Красильникова Алина",
+        "login": "krasava",
+        "online": true,
+        "avatar": "https://images.ast.ru/upload/iblock/ba8/Gosling_752.jpg"
+      }
+    }
+  ]
+}
