@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+
+  <body>
+    <script src="https://cdn.socket.io/4.7.5/socket.io.min.js"></script>
+    <script>
+      const socket = io("http://localhost:3000");
+      window.socket = socket;
+      socket.on("SERVER:NEW_MESSAGE", (msg) => {
+        if (
+          msg.chat.participants.includes(window.user) &&
+          window.user !== msg.author
+        ) {
+          console.log("SERVER:NEW_MESSAGE", msg, window.user);
+        }
+      });
+    </script>
+  </body>
+</html>
