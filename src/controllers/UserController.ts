@@ -1,10 +1,13 @@
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
-import { UserModel } from "../models";
+import { ChatModel, UserModel } from "../models";
 import { validationResult } from "express-validator";
 import createJWToken from "../utils/createJWToken";
 import { customRequest } from "../types";
 import { Server } from "socket.io";
+import { Document } from "mongodb";
+import { Types } from "mongoose";
+import { UserType } from "../models/User";
 
 class UserController {
   io: Server;
@@ -30,6 +33,54 @@ class UserController {
     }
   };
 
+  index = async (req: customRequest, res: Response) => {
+    try {
+      const userId = req?.user?._id;
+      const { id } = req.params;
+      const chats = await ChatModel.find({
+        participants: userId,
+        isGroup: false,
+      });
+      const participants: string[] = [];
+      chats?.forEach((chat: any) => {
+        chat?.participants?.forEach((participant: Types.ObjectId) => {
+          if (participant.toString() != userId) {
+            participants.push(participant.toString());
+          }
+        });
+      });
+      const users: (UserType & {
+        _id: Types.ObjectId;
+      })[] = await UserModel.find({ _id: { $ne: userId } });
+      if (!users) {
+        return res.status(404).json({
+          message: `User ${id} not found`,
+        });
+      }
+
+      const getUser = (users: any[]) => {
+        return users.map((user) => ({
+          _id: user?._id,
+          name: `${user?.surname} ${user?.name} ${user?.patronymic}`,
+          avatar: user?.avatar,
+        }));
+      };
+      const privateUsers = getUser(
+        users.filter((user) => {
+          return !participants.includes(user?._id.toString());
+        })
+      );
+
+      const groupUsers = getUser(users);
+
+      res.json({ privateUsers, groupUsers });
+    } catch (err) {
+      res.status(404).json({
+        message: "User not found",
+      });
+    }
+  };
+
   login = async (req: customRequest, res: Response) => {
     const { email, password } = req.body;
     const postData = { email, password };
@@ -45,34 +96,14 @@ class UserController {
         const token = createJWToken(user);
         res.json({ status: "success", token });
       } else {
-        res.json({
+        res.status(404).json({
           status: "error",
-          message: "Incorrect password or email",
+          message: "Неверный логин или пароль",
         });
       }
-      // generatePasswordHash(postData.password as string | Buffer)
-      //   .then((passwordHash) => {
-      //   if (!!user && user.password === passwordHash) {
-      //     const token = createJWToken(postData);
-      //     res.json({ status: "success", token });
-      //   } else {
-      //     res.json({
-      //       status: "error",
-      //       m: user?.password,
-      //       hm: passwordHash,
-      //       message: "Incorrect password or email",
-      //     });
-      //   }
-      // }
-      // )
-      // .catch((error) =>
-      //   res.status(404).json({
-      //     message: error,
-      //   })
-      // );
     } catch (error) {
       return res.status(404).json({
-        message: "User not found",
+        message: "Неверный логин или пароль",
       });
     }
   };
@@ -134,6 +165,33 @@ class UserController {
       });
     } catch (err) {
       res.json(err);
+    }
+  };
+
+  uploadAvatar = async (req: customRequest, res: Response) => {
+    try {
+      const userId = req?.user?._id;
+      const file = req.file;
+
+      if (!file) {
+        return res.status(400).json({ message: "Файл не загружен" });
+      }
+
+      const avatarUrl = `/uploads/avatars/${file.filename}`;
+
+      const user = await UserModel.findByIdAndUpdate(
+        userId,
+        { avatar: avatarUrl },
+        { new: true }
+      );
+
+      if (!user) {
+        return res.status(404).json({ message: "Пользователь не найден" });
+      }
+
+      res.json({ message: "Аватар успешно загружен", avatar: avatarUrl });
+    } catch (err) {
+      res.status(500).json({ err });
     }
   };
 }

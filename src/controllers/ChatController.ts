@@ -16,7 +16,7 @@ class ChatController {
       const userId = req?.user?._id;
       const chats = await ChatModel.find({
         participants: userId,
-      }).populate("participants");
+      }).populate(["participants", "lastMessage"]);
       if (!chats) {
         return res.status(404).json({
           message: `Chats for ${userId} not found`,
@@ -24,13 +24,38 @@ class ChatController {
       }
 
       const formattedDialogs = chats.map((chat) => {
+        const {
+          author,
+          text,
+          unread,
+          createdAt,
+          isSystem,
+          attachments,
+          audio,
+        } = chat?.lastMessage as any;
+        const otherParticipant: any = chat.participants.find(
+          (participant) => participant._id.toString() == author
+        );
+        const lastMessage: any = chat?.lastMessage
+          ? {
+              authorId: author,
+              author: otherParticipant.name,
+              isMe: author == userId,
+              text,
+              unread,
+              createdAt,
+              isSystem,
+              attachments,
+              audio,
+            }
+          : {};
         if (chat.isGroup) {
           return {
             _id: chat._id,
             name: chat?.groupInfo?.name,
             photo: chat?.groupInfo?.photo || null,
             type: "group",
-            lastMessage: chat?.lastMessage,
+            lastMessage: lastMessage,
           };
         } else {
           const otherParticipant: any = chat.participants.find(
@@ -41,7 +66,8 @@ class ChatController {
             name: `${otherParticipant?.surname} ${otherParticipant?.name} ${otherParticipant?.patronymic}`,
             photo: otherParticipant.avatar || null,
             type: "private",
-            lastMessage: chat?.lastMessage,
+            last_seen: otherParticipant.last_seen,
+            lastMessage: lastMessage,
           };
         }
       });
@@ -58,7 +84,7 @@ class ChatController {
     try {
       const { id } = req.query;
       const userId = req?.user?._id;
-      const chat = await ChatModel.find({
+      const chat: any = await ChatModel.findOne({
         _id: id,
         participants: userId,
       }).populate("participants");
@@ -68,28 +94,35 @@ class ChatController {
         });
       }
 
-      //   if (chat.isGroup) {
-      //     return {
-      //       _id: chat._id,
-      //       name: chat?.groupInfo?.name,
-      //       photo: chat?.groupInfo?.photo,
-      //       type: "group",
-      //       lastMessage: chat?.lastMessage,
-      //     };
-      //   } else {
-      //     const otherParticipant: any = chat.participants.find(
-      //       (participant) => participant._id.toString() !== userId
-      //     );
-      //     return {
-      //       _id: chat._id,
-      //       name: otherParticipant.fullname,
-      //       photo: otherParticipant.avatar || null,
-      //       type: "private",
-      //       lastMessage: chat?.lastMessage,
-      //     };
-      //   }
-      // });
-      res.json(chat);
+      const formattedDialog = () => {
+        if (chat?.isGroup) {
+          return {
+            _id: chat?._id,
+            name: chat?.groupInfo?.name,
+            photo: chat?.groupInfo?.photo || null,
+            type: "group",
+            author: chat?.author,
+            admins: chat?.admins,
+            participants: chat.participants,
+          };
+        } else {
+          const otherParticipant: any = chat?.participants.find(
+            (participant: any) => participant?._id?.toString() !== userId
+          );
+          return {
+            _id: chat._id,
+            name: `${otherParticipant?.surname} ${otherParticipant?.name} ${otherParticipant?.patronymic}`,
+            photo: otherParticipant?.avatar || null,
+            type: "private",
+            last_seen: otherParticipant?.last_seen,
+            participant: otherParticipant,
+          };
+        }
+      };
+
+      const dialog = formattedDialog();
+
+      res.json(dialog);
     } catch (error) {
       res.status(404).json({
         message: "Chats not found",
@@ -100,12 +133,12 @@ class ChatController {
 
   create = async (req: customRequest, res: Response) => {
     try {
-      const { isGroup = false, participants, author, groupInfo } = req.body;
+      const { isGroup = false, participants, groupInfo } = req.body;
       const authorId = req?.user?._id;
       const postData = {
         isGroup,
         participants,
-        author,
+        author: authorId,
         groupInfo: {},
       };
 
@@ -137,15 +170,26 @@ class ChatController {
           try {
             const message = new MessageModel({
               isSystem: true,
-              author,
+              author: authorId,
               chat: data._id,
               text: `Чат создан`,
             });
             const response = await message.save();
             if (response) {
+              const chatUpdate = await ChatModel.findByIdAndUpdate(
+                { _id: data._id },
+                { lastMessage: response._id },
+                { upsert: true }
+              );
               res.json({
                 dialog: data,
               });
+              if (chatUpdate?.participants.includes(authorId)) {
+                this.io.emit("SERVER:DIALOG_CREATED", {
+                  ...postData,
+                  chat: data,
+                });
+              }
             }
           } catch (error) {
             res.json(error);
